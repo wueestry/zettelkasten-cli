@@ -13,12 +13,8 @@ from zettelkasten_cli.config import (
     PROMPT_TITLE,
 )
 from zettelkasten_cli.utils import open_in_editor
-from zettelkasten_cli.periodic_notes import append_daily_note
 
 app = typer.Typer()
-
-
-# TODO: Add H1 title to new note
 
 
 def create_new_note(title, template, vim_mode) -> None:
@@ -72,8 +68,24 @@ def create_file(file_path: Path, note_title: str, template: Optional[str]) -> No
 
 def parse_commands(commands: list[str]) -> list[str]:
     for i in range(len(commands)):
-        commands[i] = commands[i].replace("tp.file.", "")
-        commands[i] = commands[i].replace("creation_date()", "formatDate(new Date())")
+        c = commands[i]
+        c = c.replace("tp.file.", "")
+        c = c.replace("creation_date()", "formatDate(new Date())")
+        if "moment" in c:
+            c = c.replace(
+                "moment(title, 'YYYY-MM-DD').subtract(1, 'd').format('YYYY-MM-DD')",
+                "formatDate(new Date().setDate(new Date().getDate() - 1))",
+            )
+            c = c.replace(
+                "moment(title, 'YYYY-MM-DD').add(1, 'd').format('YYYY-MM-DD')",
+                "formatDate(new Date().setDate(new Date().getDate() + 1))",
+            )
+
+        c = c.replace(
+            'tp.date.now("dddd, Do MMMM YYYY", 0, title, "YYYYMMDD")',
+            "getOrdinalDate()",
+        )
+        commands[i] = c
     return commands
 
 
@@ -85,7 +97,7 @@ def apply_template(note_title: str, template: Optional[str]) -> str:
 
     templated_text = template_path.read_text()
 
-    commands = re.findall("(?<=<%).*(?=%>)", templated_text)
+    commands = re.findall("(?<=<%).+?(?=%>)", templated_text)
 
     commands = parse_commands(commands)
 
@@ -96,6 +108,26 @@ def apply_template(note_title: str, template: Optional[str]) -> str:
             month = ('0' + (d.getMonth() + 1)).slice(-2),
             year = d.getFullYear();
         return [year, month, day].join('-');
+    }}
+
+    function getOrdinalSuffix(day) {{
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {{
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }}
+    }}
+
+    function getOrdinalDate() {{
+        date = new Date();
+        day = date.getDate();
+        suffix = getOrdinalSuffix(day);
+        weekday = date.toLocaleDateString('en-US', {{ weekday: 'long' }});
+        month = date.toLocaleDateString('en-US', {{ month: 'long' }});
+        year = date.getFullYear();
+        return `${{weekday}}, ${{day}}${{suffix}} ${{month}} ${{year}}`;
     }}
 
     var title = "{note_title}"
@@ -122,7 +154,7 @@ def apply_template(note_title: str, template: Optional[str]) -> str:
     def replace_commands(match):
         return results.pop(0)
 
-    templated_text = re.sub("(?=<%).*(?<=%>)", replace_commands, templated_text)
+    templated_text = re.sub("(?=<%).+?(?<=%>)", replace_commands, templated_text)
 
     return templated_text
 
