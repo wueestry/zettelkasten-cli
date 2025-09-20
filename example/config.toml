@@ -1,0 +1,15 @@
+[general]
+zettelkasten_root = "~/Documents/obsidian"
+inbox_path = "~/Documents/obsidian/inbox"
+template_directory = "~/Documents/obsidian/meta/templates"
+default_template = "note-template.md"
+editor = "nvim"
+
+[file_settings]
+max_title_length = 80
+prompt_title = "Enter the title of the note"
+
+[neovim]
+arguments = "+ normal Gzzo"
+commands = ""
+

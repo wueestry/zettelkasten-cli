@@ -4,10 +4,11 @@ from pathlib import Path
 import typer
 from rich import print
 
-from zettelkasten_cli.config import ZETTELKASTEN_ROOT
-from zettelkasten_cli.utils import format_date, format_week, open_in_editor
+from zettelkasten_cli.utils import open_in_editor, load_config, format_date, format_week
 
 app = typer.Typer()
+
+cfg = load_config()
 
 TODAY = format_date()
 YESTERDAY = format_date(-1)
@@ -15,8 +16,8 @@ TOMORROW = format_date(1)
 THIS_WEEK = format_week()
 LAST_WEEK = format_week(-7)  # Correct this to start on Monday and end Sunday
 NEXT_WEEK = format_week(7)  # Correct this to start on Monday and end Sunday
-CONFIG_PATH = Path(os.environ.get("XDG_CONFIG_HOME", ""))
 
+ZETTELKASTEN_ROOT = cfg["general"]["zettelkasten_root"]
 DAILY_NOTES_PATH = ZETTELKASTEN_ROOT / "periodic-notes" / "daily"
 DAILY_NOTES_TEMPLATE_PATH = ZETTELKASTEN_ROOT / "zk" / "daily.md"
 TODAY_NOTE_PATH = DAILY_NOTES_PATH / f"{TODAY}.md"
@@ -120,6 +121,7 @@ def open_daily_note() -> None:
     Opens today's daily note in Neovim.
     Creates the note if it doesn't exist before opening.
     """
+
     create_daily_note()
     try:
         open_in_editor(TODAY_NOTE_PATH)
