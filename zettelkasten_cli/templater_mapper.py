@@ -12,26 +12,26 @@ def templater_mapper(note_title: str, command: str) -> str:
 
     if (
         cmd
-        == '<% (tp.file.title.charAt(0).toUpperCase()+tp.file.title.slice(1)).split("-").join(" ") %>'
+        == '(tp.file.title.charAt(0).toUpperCase()+tp.file.title.slice(1)).split("-").join(" ")'
     ):
-        templated_str = " ".join([t.capitalize() for t in note_title.splt("-")])
-    elif cmd == '<% tp.file.title.split("-").join(" ").toUpperCase() %>':
+        templated_str = " ".join([t.capitalize() for t in note_title.split("-")])
+    elif cmd == 'tp.file.title.split("-").join(" ").toUpperCase()':
         templated_str = " ".join([t.upper() for t in note_title.split("-")])
-    elif cmd == "<% tp.file.creation_date() %>":
+    elif cmd == "tp.file.creation_date()":
         templated_str = datetime.now().strftime("%Y-%m-%d")
-    elif cmd == "<% tp.file.title %>":
+    elif cmd == "tp.file.title":
         templated_str = note_title
     elif (
         cmd
-        == "<% fileDate = moment(tp.file.title, 'YYYY-MM-DD').subtract(1, 'd').format('YYYY-MM-DD') %>]"
+        == "fileDate = moment(tp.file.title, 'YYYY-MM-DD').subtract(1, 'd').format('YYYY-MM-DD')"
     ):
         templated_str = (datetime.now() - timedelta(1)).strftime("%Y-%m-%d")
     elif (
         cmd
-        == "<% fileDate = moment(tp.file.title, 'YYYY-MM-DD').add(1, 'd').format('YYYY-MM-DD') %>]"
+        == "fileDate = moment(tp.file.title, 'YYYY-MM-DD').add(1, 'd').format('YYYY-MM-DD')"
     ):
         templated_str = (datetime.now() + timedelta(1)).strftime("%Y-%m-%d")
-    elif cmd == '<% tp.date.now("dddd, Do MMMM YYYY", 0, tp.file.title, "YYYYMMDD") %>':
+    elif cmd == 'tp.date.now("dddd, Do MMMM YYYY", 0, tp.file.title, "YYYYMMDD")':
         templated_str = (
             datetime.now()
             .strftime("%A, the {xx} %B %Y")

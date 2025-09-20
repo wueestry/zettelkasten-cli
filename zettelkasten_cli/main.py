@@ -18,7 +18,7 @@ app = typer.Typer()
 def new(
     title: Annotated[Optional[str], typer.Argument()] = None,
     template: Annotated[Optional[str], typer.Option("--template")] = None,
-    vim_mode: Annotated[bool, typer.Option("--vim")] = False,
+    vim_mode: Annotated[bool, typer.Option("--vim")] = True,
 ) -> None:
     """
     Create a new note with the provided title. Will prompt if no title given.

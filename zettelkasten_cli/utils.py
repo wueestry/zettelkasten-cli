@@ -2,6 +2,7 @@ import subprocess
 import os
 import tomllib
 import re
+from datetime import datetime, timedelta
 
 from pathlib import Path
 from typing import Union
@@ -9,6 +10,22 @@ from typing import Union
 from rich import print
 
 from zettelkasten_cli.templater_mapper import templater_mapper
+
+
+def format_date(delta_days=0):
+    """
+    Returns a specified day as a string
+    """
+    return (datetime.now() + timedelta(days=delta_days)).strftime("%Y-%m-%d")
+
+
+def format_week(delta_days=0):
+    """
+    Returns the week of a specified day in a string format
+    """
+    return (
+        datetime.now() + timedelta(days=delta_days - datetime.now().weekday())
+    ).strftime("%Y-W%V")
 
 
 def load_config() -> dict[str, dict[str, str]]:
@@ -69,6 +86,9 @@ def parse_templater_commands(note_title: str, templated_text: str):
             templater_mapper(note_title=note_title, command=commands[i])
         )
 
-    template = re.sub("(?=<%).+?(?<=%>)", replaced_templates, templated_text)
+    def replace_commands(match):
+        return replaced_templates.pop(0)
+
+    template = re.sub("(?=<%).+?(?<=%>)", replace_commands, templated_text)
 
     return template

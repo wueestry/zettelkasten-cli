@@ -8,8 +8,6 @@ from zettelkasten_cli.utils import open_in_editor, load_config, format_date, for
 
 app = typer.Typer()
 
-cfg = load_config()
-
 TODAY = format_date()
 YESTERDAY = format_date(-1)
 TOMORROW = format_date(1)
@@ -17,14 +15,14 @@ THIS_WEEK = format_week()
 LAST_WEEK = format_week(-7)  # Correct this to start on Monday and end Sunday
 NEXT_WEEK = format_week(7)  # Correct this to start on Monday and end Sunday
 
-ZETTELKASTEN_ROOT = cfg["general"]["zettelkasten_root"]
-DAILY_NOTES_PATH = ZETTELKASTEN_ROOT / "periodic-notes" / "daily"
-DAILY_NOTES_TEMPLATE_PATH = ZETTELKASTEN_ROOT / "zk" / "daily.md"
-TODAY_NOTE_PATH = DAILY_NOTES_PATH / f"{TODAY}.md"
+ZETTELKASTEN_ROOT = "~/Documents/obsidian"  # TODO: Change to config.toml implementation instead of hardcoded path
+DAILY_NOTES_PATH = os.path.join(ZETTELKASTEN_ROOT, "periodic-notes", "daily")
+DAILY_NOTES_TEMPLATE_PATH = os.path.join(ZETTELKASTEN_ROOT, "zk", "daily.md")
+TODAY_NOTE_PATH = os.path.join(DAILY_NOTES_PATH, f"{TODAY}.md")
 
-WEEKLY_NOTES_PATH = ZETTELKASTEN_ROOT / "periodic-notes" / "weekly"
-WEEKLY_NOTES_TEMPLATE_PATH = ZETTELKASTEN_ROOT / "zk" / "weekly.md"
-THIS_WEEK_NOTE_PATH = WEEKLY_NOTES_PATH / f"{THIS_WEEK}.md"
+WEEKLY_NOTES_PATH = os.path.join(ZETTELKASTEN_ROOT, "periodic-notes", "weekly")
+WEEKLY_NOTES_TEMPLATE_PATH = os.path.join(ZETTELKASTEN_ROOT, "zk", "weekly.md")
+THIS_WEEK_NOTE_PATH = os.path.join(WEEKLY_NOTES_PATH, f"{THIS_WEEK}.md")
 
 
 def format_daily_note_content() -> str:

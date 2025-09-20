@@ -34,7 +34,7 @@ def create_new_note(
             template=template,
         )
         if not vim_mode:
-            open_in_editor(str(file_path))
+            open_in_editor(cfg=cfg, file_path=str(file_path))
     except ValueError as e:
         typer.echo(f"Error: {str(e)}", err=True)
         raise typer.Exit(code=1)
@@ -69,7 +69,7 @@ def format_path(inbox_path: str, title: str) -> Path:
     """
     Format the absolute path based on Zettelkasten location and the note title.
     """
-    return f"{inbox_path}/{title}.md"
+    return Path(f"{inbox_path}/{title}.md")
 
 
 def create_file(
@@ -81,7 +81,7 @@ def create_file(
     if file_path.exists():
         raise FileExistsError(f"The file already exists: {file_path}")
     templated_text = apply_template(
-        general_cfg=general_cfg, title=title, template=template
+        template_cfg=general_cfg, title=title, template=template
     )
     create_note_file(file_path=file_path, templated_text=templated_text)
     print(f"New note created: {file_path}")
@@ -96,9 +96,9 @@ def apply_template(
     template_file = (
         template_cfg["default_template"] if not template else f"{template}.md"
     )
-    template_path = f"{template_cfg['template_directory']}/{template_file}"
+    template_path = Path(f"{template_cfg['template_directory']}/{template_file}")
     templated_text = template_path.read_text()
-    template = parse_templater_commands(templated_text=templated_text)
+    template = parse_templater_commands(note_title=title, templated_text=templated_text)
     return template
 
 
