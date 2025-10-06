@@ -42,6 +42,11 @@ def load_config() -> dict[str, dict[str, str]]:
         raise Exception(
             "Config not found. Run zk config first to generate a configuration file."
         )
+
+    for category, data in config.items():
+        for key, value in data.items():
+            if isinstance(value, str) and "~" in value:
+                config[category][key] = os.path.expanduser(value)
     return config
 
 
