@@ -22,10 +22,11 @@ def create_new_note(
             prompt_title=cfg["file_settings"]["prompt_title"], title=title
         )
         validate_title(
-            max_title_length=cfg["file_settings"]["max_title_length"], title=note_title
+            max_title_length=int(cfg["file_settings"]["max_title_length"]),
+            title=note_title,
         )
         file_path = format_path(
-            inbox_path=cfg["general"]["inbox_path"], title=note_title
+            inbox_path=cfg["general"]["inbox_directory"], title=note_title
         )
         create_file(
             general_cfg=cfg["general"],

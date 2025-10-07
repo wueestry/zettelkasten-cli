@@ -48,7 +48,12 @@ def config(force: Annotated[bool, typer.Option("--force")] = False) -> None:
     """
     Creates a default config file in $XDG_CONFIG_HOME/zettelkasten-cli (default directory ~/.config/zettelkasten-cli)
     """
-    config_path = os.path.join(os.environ["XDG_CONFIG_HOME"], "zettelkasten-cli")
+    if "XDG_CONFIG_HOME" in os.environ:
+        config_path = os.path.join(os.environ["XDG_CONFIG_HOME"], "zettelkasten-cli")
+    else:
+        config_path = os.path.join(
+            os.path.expanduser("~"), ".config", "zettelkasten-cli"
+        )
     Path(config_path).mkdir(parents=True, exist_ok=True)
     if not os.path.exists(os.path.join(config_path, "config.toml")) or force:
         example_config_url = "https://raw.githubusercontent.com/wueestry/zettelkasten-cli/refs/heads/main/example/config.toml"

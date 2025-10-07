@@ -1,7 +1,7 @@
 [general]
 zettelkasten_root = "~/Documents/obsidian"
-inbox_path = "~/Documents/obsidian/inbox"
-template_directory = "~/Documents/obsidian/meta/templates"
+inbox_directory = "inbox"
+template_directory = "meta/templates"
 default_template = "note-template.md"
 editor = "nvim"
 

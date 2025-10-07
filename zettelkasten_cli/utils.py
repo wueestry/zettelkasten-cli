@@ -32,9 +32,15 @@ def load_config() -> dict[str, dict[str, str]]:
     """
     Load the configuration file and save all configs in a dict.
     """
-    config_path = os.path.join(
-        os.environ["XDG_CONFIG_HOME"], "zettelkasten-cli", "config.toml"
-    )
+    if "XDG_CONFIG_HOME" in os.environ:
+        config_path = os.path.join(
+            os.environ["XDG_CONFIG_HOME"], "zettelkasten-cli", "config.toml"
+        )
+    else:
+        config_path = os.path.join(
+            os.path.expanduser("~"), ".config", "zettelkasten-cli", "config.toml"
+        )
+
     try:
         with open(config_path, "rb") as f:
             config = tomllib.load(f)
@@ -47,6 +53,10 @@ def load_config() -> dict[str, dict[str, str]]:
         for key, value in data.items():
             if isinstance(value, str) and "~" in value:
                 config[category][key] = os.path.expanduser(value)
+            if "directory" in key:
+                config[category][key] = os.path.join(
+                    config["general"]["zettelkasten_root"], value
+                )
     return config
 
 
