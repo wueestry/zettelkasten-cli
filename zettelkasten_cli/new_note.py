@@ -1,11 +1,11 @@
-import typer
-import subprocess
-import os
-import re
-from rich import print
-from typing import Optional
 from pathlib import Path
-from zettelkasten_cli.utils import open_in_editor, load_config, parse_templater_commands
+from typing import Optional
+
+import typer
+from rich import print
+
+from zettelkasten_cli.utils import (load_config, open_in_editor,
+                                    parse_templater_commands)
 
 app = typer.Typer()
 
@@ -80,7 +80,9 @@ def create_file(
     Create a new note file and open it in the editor.
     """
     if file_path.exists():
-        raise FileExistsError(f"The file already exists: {file_path}")
+        typer.echo(f"File already exists: {file_path}", err=False)
+        return
+
     templated_text = apply_template(
         template_cfg=general_cfg, title=title, template=template
     )

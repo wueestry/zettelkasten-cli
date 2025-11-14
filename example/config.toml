@@ -1,8 +1,10 @@
 [general]
 zettelkasten_root = "~/Documents/obsidian"
 inbox_directory = "inbox"
+journal_directory = "fleeting-notes"
 template_directory = "meta/templates"
 default_template = "note-template.md"
+daily_template = "daily-note-template.md"
 editor = "nvim"
 
 [file_settings]

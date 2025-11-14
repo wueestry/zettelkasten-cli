@@ -1,15 +1,12 @@
-import typer
 import os
-import wget
-
-from zettelkasten_cli import new_note
-from zettelkasten_cli import periodic_notes
-
+from pathlib import Path
 from typing import Optional
+
+import typer
+import wget
 from typing_extensions import Annotated
 
-from pathlib import Path
-
+from zettelkasten_cli import new_note, periodic_notes
 
 app = typer.Typer()
 
@@ -33,14 +30,6 @@ def day() -> None:
     Open daily note or create if it doesn't exist.
     """
     periodic_notes.open_daily_note()
-
-
-@app.command()
-def week() -> None:
-    """
-    Open weekly note or throw error if it doesn't exist.
-    """
-    periodic_notes.open_weekly_note()
 
 
 @app.command()
